@@ -24,6 +24,8 @@ public class EnemyStats : ScriptableObject
     [Header("Attack stats")]
     public float attackRange;
     public float detectionRange;
+    public float attackCooldown;
+    public float stunDuration;
 
     public EnemyAttackType attackType;
 }
@@ -31,6 +33,13 @@ public class EnemyStats : ScriptableObject
 [CreateAssetMenu(menuName = "Combos/Enemy Combo")]
 public class EnemyCombo : ScriptableObject
 {
-    
+    [Header("Combo Setup")]
 
+    public string[] animationTriggers;
+
+    [Header("Damage")]
+    public float[] damageValues;
+
+    [Header("Timing")]
+    public float[] hitDelays;
 }

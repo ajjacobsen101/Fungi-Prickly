@@ -261,6 +261,7 @@ public class PlayerController : MonoBehaviour
     private InputAction specialAttack1;
     private InputAction look;
     private InputAction zoom;
+    private InputAction pause;
 
     public CharacterController controller;
     private CinemachineOrbitalFollow orbital;
@@ -320,8 +321,10 @@ public class PlayerController : MonoBehaviour
         CinemachineCamera freeLook = GetComponentInChildren<CinemachineCamera>();
         orbital = freeLook.GetComponent<CinemachineOrbitalFollow>();
 
-        
+        EventManager.OnPlayerRegistered?.Invoke(this.transform);
     }
+
+   
 
     private Transform FindWeaponSocket()
     {
@@ -339,7 +342,9 @@ public class PlayerController : MonoBehaviour
         specialAttack1 = playerInput.actions["SpecialAttack1"];
         look = playerInput.actions["Look"];
         zoom = playerInput.actions["Zoom"];
+        pause = playerInput.actions["Pause"];
 
+        pause.performed += ctx => TogglePause();
 
       
         jump.started += ctx => JumpPressed = true;
@@ -357,7 +362,7 @@ public class PlayerController : MonoBehaviour
         modifierAttack.started += ctx => modifierHeld = true;
         modifierAttack.canceled += ctx => modifierHeld = false;
 
-        GameManager.instance.OnStateChanged += HandleGameStateChanged;
+        
 
         playerInput.actions.Enable();
 
@@ -369,7 +374,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameManager.instance.OnStateChanged -= HandleGameStateChanged;
+        
         playerInput.actions.Disable();
     }
 
@@ -414,24 +419,12 @@ public class PlayerController : MonoBehaviour
 
     #region GameStates
 
-    void HandleGameStateChanged(GameState state)
+    void TogglePause()
     {
-        switch (state)
-        {
-            case GameState.Playing:
-                
-                break;
-            case GameState.Paused:
-                
-                break;
-            case GameState.MainMenu:
-                
-                break;
-            case GameState.Cutscene:
-                
-                break;
-        }
+        GameManager.instance.ChangeState(GameState.Paused);
     }
+
+    
 
     #endregion
 

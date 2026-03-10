@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 
     public bool IsPaused() => CurrentState == GameState.Paused;
 
-    public event Action<GameState> OnStateChanged;
+   
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -29,14 +29,45 @@ public class GameManager : MonoBehaviour
         
     }
 
+    private void OnEnable()
+    {
+        EventManager.OnStateChanged += HandleGameStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.OnStateChanged -= HandleGameStateChanged;
+    }
+
     public void ChangeState(GameState newState)
     {
         if(CurrentState == newState) return;
 
         CurrentState = newState;
-        OnStateChanged?.Invoke(CurrentState);
+        EventManager.OnStateChanged?.Invoke(CurrentState);
         Debug.Log("Game State changed to: " + CurrentState);
     }
 
+    void HandleGameStateChanged(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.Playing:
+                Time.timeScale = 1f;
+                Cursor.lockState = CursorLockMode.Locked;
+                UiManager.instance.SetPauseUI(false);
+                break;
+            case GameState.Paused:
+                Time.timeScale = 0f;
+                Cursor.lockState = CursorLockMode.None;
+                UiManager.instance.SetPauseUI(true);
+                break;
+            case GameState.MainMenu:
+                Time.timeScale = 1f;
+                break;
+            case GameState.Cutscene:
 
+                break;
+        }
+    }
 }

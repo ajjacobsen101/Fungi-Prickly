@@ -15,6 +15,11 @@ public class UiManager : MonoBehaviour
         else Destroy(this);
     }
 
+    public void SetPauseUI(bool status)
+    {
+        pauseMenu.SetActive(status);
+    }
+
     public void ResumeGame()
     {
         GameManager.instance.ChangeState(GameState.Playing);
